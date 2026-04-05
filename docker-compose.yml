@@ -24,11 +24,16 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
-    env_file:
-      - .env
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: admin
+      DB_NAME: gestionequpios
     depends_on:
       db:
-        condition: service_healthy   # Espera a que MySQL este listo antes de arrancar Node
+        condition: service_healthy  # Espera a que MySQL este listo antes de arrancar Node
 
 volumes:
   mysql_data:

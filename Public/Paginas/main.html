@@ -8,14 +8,8 @@
 </head>
 <body>
 
-   
     <nav class="navbar">
-        <button class="btn-agregar">+ Agregar equipo</button>
- 
-        <!-- Enlace que activa el popup historial con :target -->
         <a href="#popup-historial" class="nav-title">Historial de Reportes</a>
- 
-        <!-- Enlace que activa el popup usuario con :target -->
         <a href="#popup-usuario" class="nav-user">
             <div class="nav-avatar" id="nav-iniciales"></div>
             <div class="nav-info">
@@ -24,7 +18,7 @@
             </div>
         </a>
     </nav>
- 
+
     <!--popup de historial de reportes-->
     <div class="popup-overlay" id="popup-historial">
         <a href="#" class="popup-fondo"></a>
@@ -33,23 +27,18 @@
             <table class="historial-table">
                 <thead>
                     <tr>
-                        <th>No. Inventario</th>
-                        <th>Marca</th>
-                        <th>Modelo</th>
-                        <th>Procesador</th>
-                        <th>Ram</th>
-                        <th>Estado</th>
+                        <th>Equipo</th>
+                        <th>Fecha y Hora</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr><td>Equipo No.1</td><td>Dell</td><td>Optiplex 7080</td><td>i5-10400</td><td>16GB</td><td>Activo</td></tr>
-                    <tr><td>Equipo No.4</td><td>HP</td><td>EliteDesk 800</td><td>i7-9700</td><td>16GB</td><td>Activo</td></tr>
-                    <tr><td>Equipo No.6</td><td>Lenovo</td><td>ThinkCentre M720</td><td>i5-9500</td><td>8GB</td><td>Activo</td></tr>
+                <tbody id="historial-body">
+                    <tr><td colspan="3">No hay reportes generados</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
- 
+
     <!--popup de usuario-->
     <div class="popup-overlay" id="popup-usuario">
         <a href="#" class="popup-fondo"></a>
@@ -62,17 +51,14 @@
                     <p class="popup-user-role">Admin</p>
                 </div>
             </div>
-            <!--cerrar sesion-->
             <a href="/logout" class="btn-cerrar-sesion">Cerrar Sesión</a>
         </div>
     </div>
- 
+
     <!--computadoras-->
-     <main class="grid-container" id="gridEquipos">
-        
-       
-    </main>
-        <!--Script para poner los datos de el usuario en la pagina --> 
+    <main class="grid-container" id="gridEquipos"></main>
+
+    <!--Script para poner los datos del usuario en la pagina-->
     <script>
         async function cargarUsuario() {
             const respuesta = await fetch('/sesion')
@@ -80,9 +66,8 @@
 
             if (datos.usuario) {
                 document.getElementById('nav-nombre').textContent = datos.usuario
-                document.getElementById('popup-nombre').textContent=datos.usuario
+                document.getElementById('popup-nombre').textContent = datos.usuario
 
-                // Genera las iniciales a partir del nombre
                 const iniciales = datos.usuario
                     .split(' ')
                     .map(palabra => palabra[0])
@@ -96,13 +81,14 @@
         }
         cargarUsuario()
     </script>
-    <!--Script principal , Muestra los equipos guardados en la base de datos-->
+
+    <!--Script principal, Muestra los equipos guardados en la base de datos-->
     <script>
         fetch('/PaginaAdmin/TablaEquipos')
         .then(res => res.json())
         .then(data => {
-            const grid = document.getElementById("gridEquipos");
-            grid.innerHTML = "";
+            const grid = document.getElementById("gridEquipos")
+            grid.innerHTML = ""
 
             data.forEach(equipo => {
                 const card = `
@@ -112,17 +98,58 @@
                     </div>
                     <div class="equipo-info">
                         <h3>${equipo.nombre_equipo}</h3>
-                        <p>${equipo.marca} </p>
+                        <p>${equipo.marca}</p>
                         <p>${equipo.modelo_equipo}</p>
                         <p>${new Date(equipo.fecha_adquisicion).toLocaleDateString()}</p>
                         <span class="badge ${equipo.estado}">${equipo.estado}</span>
                     </div>
                 </a>
-                `;
-                
-                grid.innerHTML += card;
-            });
-        });
+                `
+                grid.innerHTML += card
+            })
+        })
     </script>
+
+    <!--Script historial de reportes-->
+    <script>
+        function cargarHistorial() {
+            const historial = JSON.parse(localStorage.getItem('historialReportes') || '[]')
+            const tbody = document.getElementById('historial-body')
+
+            if (historial.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3">No hay reportes generados</td></tr>'
+                return
+            }
+
+            tbody.innerHTML = ''
+            historial.forEach(r => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${r.equipo}</td>
+                        <td>${r.fecha} ${r.hora}</td>
+                        <td>
+                            <button onclick="reDescargar('${r.nombreArchivo}', \`${r.contenido.replace(/`/g, '\\`')}\`)"
+                                style="background:#2563eb;color:white;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px">
+                                ⬇ Descargar
+                            </button>
+                        </td>
+                    </tr>
+                `
+            })
+        }
+
+        function reDescargar(nombreArchivo, contenido) {
+            const blob = new Blob([contenido], { type: 'text/plain' })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = nombreArchivo
+            a.click()
+            URL.revokeObjectURL(url)
+        }
+
+        document.querySelector('a[href="#popup-historial"]').addEventListener('click', cargarHistorial)
+    </script>
+
 </body>
 </html>

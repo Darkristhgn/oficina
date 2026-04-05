@@ -21,19 +21,6 @@ body {
     z-index: 100;
 }
 
-.btn-agregar {
-    background: transparent;
-    color: #ffffff;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 6px 10px;
-}
-
-.btn-agregar:hover {
-    opacity: 0.8;
-}
 
 .nav-title {
     color: #ffffff;
