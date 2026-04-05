@@ -1,0 +1,34 @@
+services:
+
+  db:
+    image: mysql:8.4
+    container_name: oficina_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: gestionequpios
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./ProyectoHumberto.sql:/docker-entrypoint-initdb.d/ProyectoHumberto.sql
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: oficina_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy   # Espera a que MySQL este listo antes de arrancar Node
+
+volumes:
+  mysql_data:
