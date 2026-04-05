@@ -217,7 +217,23 @@ app.post('/PagComputadora/Asignar', async (req, res) => {
 })
 
 
+// Traer areas para el dropdown
+app.get('/Empleados/Areas', async (req, res) => {
+    let conexion = await crearConexion(mysql)
+    const [areas] = await conexion.query('SELECT * FROM areas')
+    res.json(areas)
+})
 
+// Crear nuevo empleado
+app.post('/Empleados/Nuevo', async (req, res) => {
+    const { nombre_empleado, puesto, area_id } = req.body
+    let conexion = await crearConexion(mysql)
+    await conexion.query(
+        'INSERT INTO empleados (nombre_empleado, puesto, area_id) VALUES (?, ?, ?)',
+        [nombre_empleado, puesto, area_id]
+    )
+    res.json({ mensaje: 'Empleado creado correctamente' })
+})
 
 //Logica de solo servidor
 

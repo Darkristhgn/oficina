@@ -40,18 +40,12 @@
         <a href="#" class="popup-fondo"></a>
         <div class="popup-caja popup-caja--mantenimiento">
             <a href="#" class="popup-cerrar">✕</a>
- 
             <h3 class="mant-titulo">Historial de Mantenimiento</h3>
- 
-            <!--registro 1-->
-            <div id="historial-container">
-
-            </div>
- 
+            <div id="historial-container"></div>
         </div>
     </div>
 
-    <!--Popup para editar estado de equipo-->
+    <!--popup para editar estado de equipo-->
     <div class="popup-overlay" id="popup-estado">
         <a href="#" class="popup-fondo"></a>
         <div class="popup-caja">
@@ -61,8 +55,41 @@
         </div>
     </div>
 
+    <!--popup nuevo empleado-->
+    <div class="popup-overlay" id="popup-nuevo-empleado">
+        <a href="#" class="popup-fondo"></a>
+        <div class="popup-caja">
+            <a href="#" class="popup-cerrar">✕</a>
+            <h3 style="margin-bottom:16px;margin-top:8px;font-size:16px;color:#1e293b;">Nuevo Empleado</h3>
+            <div style="display:flex;flex-direction:column;gap:12px;min-width:260px;">
+                <div>
+                    <label style="font-size:13px;font-weight:600;color:#2563eb;">Nombre</label>
+                    <input id="nuevo-nombre" type="text" placeholder="Nombre del empleado"
+                        style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;">
+                </div>
+                <div>
+                    <label style="font-size:13px;font-weight:600;color:#2563eb;">Puesto</label>
+                    <input id="nuevo-puesto" type="text" placeholder="Puesto"
+                        style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;">
+                </div>
+                <div>
+                    <label style="font-size:13px;font-weight:600;color:#2563eb;">Área</label>
+                    <select id="nuevo-area"
+                        style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;">
+                        <option value="">Selecciona un área</option>
+                    </select>
+                </div>
+                <button id="btn-guardar-empleado"
+                    style="margin-top:4px;padding:10px;background:#2563eb;color:white;border:none;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;">
+                    Guardar
+                </button>
+                <p id="msg-nuevo-empleado" style="font-size:12px;text-align:center;color:#22c55e;display:none;">
+                    Empleado creado correctamente
+                </p>
+            </div>
+        </div>
+    </div>
 
- 
     <div class="pagina-titulo">
         <h1 id="NumeroEquipo"></h1>
     </div>
@@ -71,8 +98,6 @@
  
         <!--columna izquierda-->
         <div class="col-izquierda">
- 
-            <!--pc imagen-->
             <div class="equipo-img">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60" fill="none">
                     <rect x="8" y="4" width="50" height="34" rx="3" fill="white" fill-opacity="0.5" stroke="white" stroke-width="2"/>
@@ -85,7 +110,6 @@
                 </svg>
             </div>
  
-            <!--empleado asignado-->
             <div class="info-seccion">
                 <p class="info-label">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2">
@@ -99,7 +123,6 @@
  
             <hr class="divisor">
  
-            <!--fecha-->
             <div class="info-seccion">
                 <p class="info-label">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2">
@@ -113,125 +136,103 @@
                 <p class="info-valor-grande" id="FechaEmpAsignado"></p>
             </div>
  
-            <!--generar reporte-->
             <a href="#" class="btn-reporte">Generar reporte</a>
- 
         </div>
  
         <!--columna derecha-->
         <div class="col-derecha">
- 
             <div class="spec-fila">
                 <span class="spec-label">No.Inventario:</span>
-                <span class="spec-valor"id="NombreEquipo"></span>
+                <span class="spec-valor" id="NombreEquipo"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
                 <span class="spec-label">Marca:</span>
                 <span class="spec-valor" id="MarcaEquipo"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
                 <span class="spec-label">Modelo:</span>
                 <span class="spec-valor" id="ModeloEquipo"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
                 <span class="spec-label">Procesador:</span>
                 <span class="spec-valor" id="ModeloProcesador"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
                 <span class="spec-label">Memoria Ram:</span>
                 <span class="spec-valor" id="Ram"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
-                <span class="spec-label">Numero de Serie</span>
+                <span class="spec-label">Numero de Serie:</span>
                 <span class="spec-valor" id="NumeroSerie"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
                 <span class="spec-label">Disco Duro:</span>
-                <span class="spec-valor" id="Disco">    </span>
+                <span class="spec-valor" id="Disco"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
                 <span class="spec-label">Sistema Operativo:</span>
                 <span class="spec-valor" id="Os"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
                 <span class="spec-label">Fecha de Compra:</span>
                 <span class="spec-valor" id="FechaE"></span>
             </div>
             <hr class="spec-divisor">
- 
             <div class="spec-fila">
                 <span class="spec-label">Estado de Equipo:</span>
                 <span class="spec-valor" id="Estado"></span>
                 <a href="#popup-estado" class="btn-editar">✏️</a>
             </div>
- 
+
             <!--Botones inferiores-->
             <div class="botones-grupo">
                 <a href="#" class="btn-finalizar"></a>
                 <select id="lista-empleados" style="display:none">
                     <option value="">Selecciona un empleado</option>
                 </select>
-                <!--boton que abre el popup de mantenimiento-->
+                <a href="#popup-nuevo-empleado" class="btn-mantenimiento" id="btn-nuevo-empleado" style="display:none;">+ Nuevo</a>
                 <a href="#popup-mantenimiento" class="btn-mantenimiento">Historial de Mantenimiento</a>
             </div>
- 
         </div>
     </div>
-    <!-- Traer datos de usuario-->
+
+    <!--Script datos de usuario-->
     <script>
         async function cargarUsuario() {
             const respuesta = await fetch('/sesion')
             const datos = await respuesta.json()
-
             if (datos.usuario) {
                 document.getElementById('nav-nombre').textContent = datos.usuario
-                document.getElementById('popup-nombre').textContent=datos.usuario
-
-                // Genera las iniciales a partir del nombre
+                document.getElementById('popup-nombre').textContent = datos.usuario
                 const iniciales = datos.usuario
                     .split(' ')
                     .map(palabra => palabra[0])
                     .join('')
                     .substring(0, 2)
                     .toUpperCase()
-
                 document.getElementById('nav-iniciales').textContent = iniciales
                 document.getElementById('popup-iniciales').textContent = iniciales
             }
         }
         cargarUsuario()
     </script>
-    <!--Script principal, Mostrar datos de equipos-->
+
+    <!--Script datos del equipo-->
     <script>
         async function cargarEquipo() {
-            // Lee el id de la URL
             const params = new URLSearchParams(window.location.search)
             const id = params.get('id')
-
-            // Pide los datos al servidor
             const respuesta = await fetch(`/PagComputadora/DatosEquipo?id=${id}`)
             const equipo = await respuesta.json()
-            
-            //Asigna un numero en base a la id
-            document.getElementById('NumeroEquipo').textContent=`Equipo No.${id}`
-
-            // Llena los campos de el equipo
+            document.getElementById('NumeroEquipo').textContent = `Equipo No.${id}`
             document.getElementById('NombreEquipo').textContent = equipo.nombre_equipo
             document.getElementById('MarcaEquipo').textContent = equipo.marca
             document.getElementById('ModeloEquipo').textContent = equipo.modelo_equipo
@@ -243,27 +244,22 @@
             document.getElementById('FechaE').textContent = new Date(equipo.fecha_adquisicion).toLocaleDateString()
             document.getElementById('Estado').textContent = equipo.estado
         }
-
         cargarEquipo()
     </script>
-    <!--Script Principal, Mostrar Mantenimientos recientes del Equipo-->
+
+    <!--Script historial de mantenimiento-->
     <script>
-        async function cargarMantenimientos(){
-            // Lee el id de la URL
+        async function cargarMantenimientos() {
             const params = new URLSearchParams(window.location.search)
             const id = params.get('id')
-
             const respuesta = await fetch(`/PagComputadora/HistorialM?id=${id}`)
             const mantenimientos = await respuesta.json()
-
             const container = document.getElementById('historial-container')
             container.innerHTML = ''
-
             if (mantenimientos.length === 0) {
                 container.innerHTML = '<p>No hay registros de mantenimiento</p>'
                 return
             }
-
             mantenimientos.forEach(mant => {
                 container.innerHTML += `
                     <div class="mant-registro">
@@ -279,94 +275,86 @@
         document.querySelector('a[href="#popup-mantenimiento"]').addEventListener('click', cargarMantenimientos)
     </script>
 
-     <!--Script para cargar la lista de empleados a la pagina-->
+    <!--Script lista de empleados-->
     <script>
         async function cargarEmpleados() {
             const respuesta = await fetch('/PagComputadora/ListaEmpleados')
             const empleados = await respuesta.json()
-
             const dropdown = document.getElementById('lista-empleados')
+            dropdown.innerHTML = '<option value="">Selecciona un empleado</option>'
             empleados.forEach(emp => {
                 dropdown.innerHTML += `<option value="${emp.id_empleado}">${emp.nombre_empleado}/${emp.area}</option>`
             })
         }
-
         cargarEmpleados()
     </script>
 
-
-    <!--Script para boton asignacion-->
+    <!--Script asignacion-->
     <script>
         async function verificarAsignacion() {
             const params = new URLSearchParams(window.location.search)
             const id = params.get('id')
-
             const respuesta = await fetch(`/PagComputadora/Asignacion?id=${id}`)
             const asignacion = await respuesta.json()
 
             const boton = document.querySelector('.btn-finalizar')
+            const botonLimpio = boton.cloneNode(true)
+            boton.parentNode.replaceChild(botonLimpio, boton)
+
             const TextoEmp = document.getElementById('NombreEmp')
             const TextoFecha = document.getElementById('FechaEmpAsignado')
-            //condcional para verificar el estado de asignacion de el equipo
+            const btnNuevo = document.getElementById('btn-nuevo-empleado')
+            const dropdown = document.getElementById('lista-empleados')
+
             if (asignacion) {
-                //codigo si el equipo esta asignado
-                boton.textContent = 'Finalizar asignacion'
-                TextoEmp.textContent=`${asignacion.nombre_empleado}`
-                TextoFecha.textContent=`${new Date(asignacion.fecha_asignacion).toLocaleDateString()}`
-                boton.addEventListener('click', async (e) => {
+                botonLimpio.textContent = 'Finalizar asignacion'
+                TextoEmp.textContent = asignacion.nombre_empleado
+                TextoFecha.textContent = new Date(asignacion.fecha_asignacion).toLocaleDateString()
+                dropdown.style.display = 'none'
+                btnNuevo.style.display = 'none'
+                botonLimpio.addEventListener('click', async (e) => {
                     e.preventDefault()
                     await fetch(`/PagComputadora/FinalizarAsignacion?id=${id}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id })
                     })
-                    verificarAsignacion() 
+                    window.location.href = window.location.href
                 })
-            } 
-            else {
-                //codigo si el equipo no esta asignado
-                boton.textContent = 'Asignar equipo'
+            } else {
+                botonLimpio.textContent = 'Asignar equipo'
                 TextoEmp.textContent = 'Sin asignar'
-                TextoFecha.textContent= ''
-                
-                const dropdown = document.getElementById('lista-empleados')
+                TextoFecha.textContent = ''
                 dropdown.style.display = 'block'
-
-                boton.addEventListener('click', async (e) => {
+                btnNuevo.style.display = 'inline-block'
+                botonLimpio.addEventListener('click', async (e) => {
                     e.preventDefault()
-
                     const id_empleado = dropdown.value
                     if (!id_empleado) {
                         alert('Selecciona un empleado')
                         return
                     }
-
                     await fetch('/PagComputadora/Asignar', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id_equipo: id, id_empleado })
                     })
-
-                    dropdown.style.display = 'none'
-                    verificarAsignacion()
+                    location.reload()
                 })
             }
         }
-
         verificarAsignacion()
-
     </script>
+
+    <!--Script cambiar estado-->
     <script>
         async function cargarOpciones() {
             const params = new URLSearchParams(window.location.search)
             const id = params.get('id')
-
             const respuesta = await fetch('/PagComputadoras/EstadosEquipo')
             const estados = await respuesta.json()
-
             const container = document.getElementById('opciones-estado')
             container.innerHTML = ''
-
             estados.forEach(estado => {
                 container.innerHTML += `
                     <button class="btn-estado" onclick="cambiarEstado(${estado.id_estado}, ${id})">
@@ -382,8 +370,6 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_equipo, id_estado })
             })
-
-            // Cierra el popup y recarga los datos
             window.location.href = '#'
             cargarEquipo()
         }
@@ -391,25 +377,21 @@
         document.querySelector('a[href="#popup-estado"]').addEventListener('click', cargarOpciones)
     </script>
 
+    <!--Script generar reporte-->
     <script>
-    document.querySelector('.btn-reporte').addEventListener('click', async (e) => {
-        e.preventDefault()
-
-        const params = new URLSearchParams(window.location.search)
-        const id = params.get('id')
-
-        const resEquipo = await fetch(`/PagComputadora/DatosEquipo?id=${id}`)
-        const equipo = await resEquipo.json()
-
-        const resAsignacion = await fetch(`/PagComputadora/Asignacion?id=${id}`)
-        const asignacion = await resAsignacion.json()
-
-        const ahora = new Date()
-        const fechaReporte = ahora.toLocaleDateString()
-        const horaReporte = ahora.toLocaleTimeString()
-        const nombreArchivo = `Reporte_${equipo.nombre_equipo}_${fechaReporte.replace(/\//g, '-')}.txt`
-
-        const contenido = `
+        document.querySelector('.btn-reporte').addEventListener('click', async (e) => {
+            e.preventDefault()
+            const params = new URLSearchParams(window.location.search)
+            const id = params.get('id')
+            const resEquipo = await fetch(`/PagComputadora/DatosEquipo?id=${id}`)
+            const equipo = await resEquipo.json()
+            const resAsignacion = await fetch(`/PagComputadora/Asignacion?id=${id}`)
+            const asignacion = await resAsignacion.json()
+            const ahora = new Date()
+            const fechaReporte = ahora.toLocaleDateString()
+            const horaReporte = ahora.toLocaleTimeString()
+            const nombreArchivo = `Reporte_${equipo.nombre_equipo}_${fechaReporte.replace(/\//g, '-')}.txt`
+            const contenido = `
 REPORTE DE EQUIPO - ${fechaReporte} ${horaReporte}
 ========================================
 
@@ -431,29 +413,56 @@ ASIGNACION
 Empleado:         ${asignacion ? asignacion.nombre_empleado : 'Sin asignar'}
 Fecha Asignacion: ${asignacion ? new Date(asignacion.fecha_asignacion).toLocaleDateString() : 'N/A'}
 `.trim()
-
-        // Descarga el archivo
-        const blob = new Blob([contenido], { type: 'text/plain' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = nombreArchivo
-        a.click()
-        URL.revokeObjectURL(url)
-
-        // Guarda en historial
-        const historial = JSON.parse(localStorage.getItem('historialReportes') || '[]')
-        historial.unshift({
-            equipo: equipo.nombre_equipo,
-            fecha: fechaReporte,
-            hora: horaReporte,
-            nombreArchivo,
-            contenido
+            const blob = new Blob([contenido], { type: 'text/plain' })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = nombreArchivo
+            a.click()
+            URL.revokeObjectURL(url)
+            const historial = JSON.parse(localStorage.getItem('historialReportes') || '[]')
+            historial.unshift({ equipo: equipo.nombre_equipo, fecha: fechaReporte, hora: horaReporte, nombreArchivo, contenido })
+            localStorage.setItem('historialReportes', JSON.stringify(historial.slice(0, 50)))
         })
-        // Guarda solo los ultimos 50
-        localStorage.setItem('historialReportes', JSON.stringify(historial.slice(0, 50)))
-    })
-</script>
+    </script>
+
+    <!--Script nuevo empleado-->
+    <script>
+        async function cargarAreas() {
+            const select = document.getElementById('nuevo-area')
+            select.innerHTML = '<option value="">Selecciona un área</option>'
+            const respuesta = await fetch('/Empleados/Areas')
+            const areas = await respuesta.json()
+            areas.forEach(area => {
+                select.innerHTML += `<option value="${area.id_area}">${area.nombre_area}</option>`
+            })
+        }
+        document.querySelector('a[href="#popup-nuevo-empleado"]').addEventListener('click', cargarAreas)
+
+        document.getElementById('btn-guardar-empleado').addEventListener('click', async () => {
+            const nombre = document.getElementById('nuevo-nombre').value.trim()
+            const puesto = document.getElementById('nuevo-puesto').value.trim()
+            const area_id = document.getElementById('nuevo-area').value
+            if (!nombre || !puesto || !area_id) {
+                alert('Completa todos los campos')
+                return
+            }
+            await fetch('/Empleados/Nuevo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre_empleado: nombre, puesto, area_id })
+            })
+            document.getElementById('msg-nuevo-empleado').style.display = 'block'
+            document.getElementById('nuevo-nombre').value = ''
+            document.getElementById('nuevo-puesto').value = ''
+            document.getElementById('nuevo-area').value = ''
+            setTimeout(() => {
+                document.getElementById('msg-nuevo-empleado').style.display = 'none'
+                window.location.href = '#'
+            }, 1500)
+            await cargarEmpleados()
+        })
+    </script>
 
 </body>
 </html>
