@@ -391,9 +391,56 @@
         document.querySelector('a[href="#popup-estado"]').addEventListener('click', cargarOpciones)
     </script>
 
-   
+    <script>
+    document.querySelector('.btn-reporte').addEventListener('click', async (e) => {
+        e.preventDefault()
 
+        const params = new URLSearchParams(window.location.search)
+        const id = params.get('id')
 
+        // Trae datos del equipo
+        const resEquipo = await fetch(`/PagComputadora/DatosEquipo?id=${id}`)
+        const equipo = await resEquipo.json()
+
+        // Trae asignacion actual
+        const resAsignacion = await fetch(`/PagComputadora/Asignacion?id=${id}`)
+        const asignacion = await resAsignacion.json()
+
+        const fechaReporte = new Date().toLocaleDateString()
+
+        const contenido = `
+REPORTE DE EQUIPO - ${fechaReporte}
+========================================
+
+DATOS DEL EQUIPO
+----------------
+No. Inventario:   ${equipo.nombre_equipo}
+Marca:            ${equipo.marca}
+Modelo:           ${equipo.modelo_equipo}
+Procesador:       ${equipo.modelo_cpu}
+Memoria RAM:      ${equipo.cantidad_ram_Gb} GB
+Disco Duro:       ${equipo.almacenamiento} GB
+Sistema Operativo:${equipo.sistema_operativo}
+Numero de Serie:  ${equipo.numero_serie}
+Fecha de Compra:  ${new Date(equipo.fecha_adquisicion).toLocaleDateString()}
+Estado:           ${equipo.estado}
+
+ASIGNACION
+----------
+Empleado:         ${asignacion ? asignacion.nombre_empleado : 'Sin asignar'}
+Fecha Asignacion: ${asignacion ? new Date(asignacion.fecha_asignacion).toLocaleDateString() : 'N/A'}
+`.trim()
+
+        // Genera y descarga el .txt
+        const blob = new Blob([contenido], { type: 'text/plain' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `Reporte_${equipo.nombre_equipo}_${fechaReporte.replace(/\//g, '-')}.txt`
+        a.click()
+        URL.revokeObjectURL(url)
+    })
+</script>
 
 </body>
 </html>
