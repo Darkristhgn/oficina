@@ -398,18 +398,19 @@
         const params = new URLSearchParams(window.location.search)
         const id = params.get('id')
 
-        // Trae datos del equipo
         const resEquipo = await fetch(`/PagComputadora/DatosEquipo?id=${id}`)
         const equipo = await resEquipo.json()
 
-        // Trae asignacion actual
         const resAsignacion = await fetch(`/PagComputadora/Asignacion?id=${id}`)
         const asignacion = await resAsignacion.json()
 
-        const fechaReporte = new Date().toLocaleDateString()
+        const ahora = new Date()
+        const fechaReporte = ahora.toLocaleDateString()
+        const horaReporte = ahora.toLocaleTimeString()
+        const nombreArchivo = `Reporte_${equipo.nombre_equipo}_${fechaReporte.replace(/\//g, '-')}.txt`
 
         const contenido = `
-REPORTE DE EQUIPO - ${fechaReporte}
+REPORTE DE EQUIPO - ${fechaReporte} ${horaReporte}
 ========================================
 
 DATOS DEL EQUIPO
@@ -431,14 +432,26 @@ Empleado:         ${asignacion ? asignacion.nombre_empleado : 'Sin asignar'}
 Fecha Asignacion: ${asignacion ? new Date(asignacion.fecha_asignacion).toLocaleDateString() : 'N/A'}
 `.trim()
 
-        // Genera y descarga el .txt
+        // Descarga el archivo
         const blob = new Blob([contenido], { type: 'text/plain' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `Reporte_${equipo.nombre_equipo}_${fechaReporte.replace(/\//g, '-')}.txt`
+        a.download = nombreArchivo
         a.click()
         URL.revokeObjectURL(url)
+
+        // Guarda en historial
+        const historial = JSON.parse(localStorage.getItem('historialReportes') || '[]')
+        historial.unshift({
+            equipo: equipo.nombre_equipo,
+            fecha: fechaReporte,
+            hora: horaReporte,
+            nombreArchivo,
+            contenido
+        })
+        // Guarda solo los ultimos 50
+        localStorage.setItem('historialReportes', JSON.stringify(historial.slice(0, 50)))
     })
 </script>
 
