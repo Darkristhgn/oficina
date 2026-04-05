@@ -3,7 +3,7 @@ const extractor = require('systeminformation')
 const so = require('os');
 const importaciones = require('./ObtenerDatosEquipo')
 let mysql = require('mysql2/promise')
-const servidor = require('../TestConection')
+const servidor = require('../server')
 
 //funcion main psdt:necesario para el codigo pq es asincrono
 async function main() {

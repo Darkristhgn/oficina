@@ -229,13 +229,59 @@ app.use((req, res) => {
         '\nUps parce que la pagina que buscas no existe intenta con otra');
 });
 
+// registrar computadora automaticamente
+// Al iniciar el servidor, registra el equipo si no existe
+async function registrarEquipoLocal() {
+    const extractor = require('systeminformation')
+    const so = require('os')
+    const importaciones = require('./ExtractorDatosEquipo/ObtenerDatosEquipo')
+
+    try {
+        const serialN = await importaciones.extraerNumeroSerie(extractor)
+        const conexion = await crearConexion(mysql)
+
+        // Verificar si el equipo ya existe por numero de serie
+        const [[existe]] = await conexion.query(
+            'SELECT id_equipos FROM equipos WHERE numero_serie = ?',
+            [serialN]
+        )
+
+        if (existe) {
+            console.log(`Equipo ya registrado (serie: ${serialN}), omitiendo...`)
+            await conexion.end()
+            return
+        }
+
+        // Si no existe, extraer todo y registrar
+        const pcName    = await importaciones.extraerNombreEquipo(extractor)
+        const cpuModel  = await importaciones.extraerNombreCpu(extractor)
+        const pcModel   = await importaciones.extraerModeloEquipo(extractor)
+        const pcBrand   = await importaciones.extraerMarcaEquipo(extractor)
+        const cantRam   = parseInt(await importaciones.extraerTamanioRam(extractor))
+        const cantDisk  = await importaciones.extraerTamanioDisco(extractor)
+        const Os        = (await importaciones.extraerSo(so)).substring(0, 20)
+        const date      = new Date().toISOString().split('T')[0]
+
+        await conexion.query(
+            `INSERT INTO equipos 
+            (nombre_equipo, marca, modelo_equipo, modelo_cpu, cantidad_ram_Gb, numero_serie, fecha_adquisicion, estado_id, almacenamiento, sistema_operativo) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [pcName, pcBrand, pcModel, cpuModel, cantRam, serialN, date, 1, cantDisk, Os]
+        )
+        console.log(`Equipo "${pcName}" registrado correctamente`)
+        await conexion.end()
+
+    } catch (err) {
+        console.log('Error al registrar equipo local:', err.message)
+    }
+}
 
 //activa el servidor
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`Escuchando el puerto ${port} 
     Entra a la pagina principal desde aqui http://localhost:3000`)
+    await registrarEquipoLocal()
 })
-
 module.exports = {
 
     crearConexion: crearConexion
