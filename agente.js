@@ -4,9 +4,32 @@ const https = require('https')
 const http = require('http')
 const { execSync } = require('child_process')
 const path = require('path')
+const fs = require('fs')
+const readline = require('readline')
 
-// ← Cambia esta IP por la del servidor
-const SERVIDOR = 'http://192.168.1.28:3000'
+// Variable global para el servidor
+let SERVIDOR = ''
+
+// Configurar readline para preguntar al usuario
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+
+function preguntarIP() {
+    return new Promise((resolve) => {
+        rl.question('Ingrese la IP del servidor (ejemplo: 192.168.1.100): ', (ip) => {
+            if (!ip || ip.trim() === '') {
+                console.log('IP no válida. Usando localhost por defecto.')
+                ip = 'localhost'
+            }
+            SERVIDOR = `http://${ip.trim()}:3000`
+            console.log(`Conectando a: ${SERVIDOR}`)
+            rl.close()
+            resolve()
+        })
+    })
+}
 
 async function obtenerDatos() {
     const [cpu, mem, sistema, bios, discos, osInfo] = await Promise.all([
@@ -47,8 +70,8 @@ async function registrarEquipo(datos) {
         const opciones = {
             hostname: url.hostname,
             port: url.port,
-            path: url.pathname,
             method: 'POST',
+            path: url.pathname,
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(body)
@@ -67,14 +90,12 @@ async function registrarEquipo(datos) {
 
 function registrarEnArranque() {
     try {
-        // Ruta del exe actual
         const exePath = process.execPath
         const nombre = 'OficinaAgente'
-        // Agrega al registro de Windows en arranque de usuario
         execSync(`reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" /v "${nombre}" /t REG_SZ /d "${exePath}" /f`)
-        console.log('Registrado en arranque de Windows')
+        console.log('✓ Registrado en arranque de Windows')
     } catch (err) {
-        console.log('No se pudo registrar en arranque:', err.message)
+        console.log('✗ No se pudo registrar en arranque:', err.message)
     }
 }
 
@@ -88,8 +109,45 @@ function yaEstaEnArranque() {
     }
 }
 
+function crearDesinstalador() {
+    try {
+        const escritorio = path.join(os.homedir(), 'Desktop')
+        const rutaDesinstalador = path.join(escritorio, 'uninstall.exe')
+        
+        // Verificar si el desinstalador.exe ya existe
+        if (fs.existsSync(rutaDesinstalador)) {
+            console.log('✓ Desinstalador ya existe en el escritorio')
+            return true
+        }
+        
+        // NOTA: El uninstall.exe debe ser creado durante el build con pkg
+        // Este código asume que uninstall.exe está en el mismo directorio que agente.exe
+        const exeActual = process.execPath
+        const directorioActual = path.dirname(exeActual)
+        const uninstallSource = path.join(directorioActual, 'uninstall.exe')
+        
+        if (fs.existsSync(uninstallSource)) {
+            fs.copyFileSync(uninstallSource, rutaDesinstalador)
+            console.log(`✓ Desinstalador copiado a: ${rutaDesinstalador}`)
+            return true
+        } else {
+            console.log('⚠ No se encontró uninstall.exe para copiar')
+            return false
+        }
+    } catch (err) {
+        console.log('✗ No se pudo crear el desinstalador:', err.message)
+        return false
+    }
+}
+
 async function main() {
     try {
+        // Preguntar la IP del servidor
+        await preguntarIP()
+        
+        // Crear desinstalador en el escritorio
+        crearDesinstalador()
+        
         // Registrar en arranque si aun no esta
         if (!yaEstaEnArranque()) {
             registrarEnArranque()
@@ -109,7 +167,7 @@ async function main() {
 
         // Registrar en el servidor
         await registrarEquipo(datos)
-        console.log('Equipo registrado correctamente:', datos.nombre_equipo)
+        console.log('✓ Equipo registrado correctamente:', datos.nombre_equipo)
 
     } catch (err) {
         console.error('Error:', err.message)
