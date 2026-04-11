@@ -270,7 +270,6 @@
 
             const TextoEmp = document.getElementById('NombreEmp')
             const TextoFecha = document.getElementById('FechaEmpAsignado')
-            const btnNuevo = document.getElementById('btn-nuevo-empleado')
             const dropdown = document.getElementById('lista-empleados')
 
             if (asignacion) {
@@ -278,7 +277,6 @@
                 TextoEmp.textContent = asignacion.nombre_empleado
                 TextoFecha.textContent = new Date(asignacion.fecha_asignacion).toLocaleDateString()
                 dropdown.style.display = 'none'
-                btnNuevo.style.display = 'none'
                 botonLimpio.addEventListener('click', async (e) => {
                     e.preventDefault()
                     await fetch(`/PagComputadora/FinalizarAsignacion?id=${id}`, {
@@ -293,7 +291,6 @@
                 TextoEmp.textContent = 'Sin asignar'
                 TextoFecha.textContent = ''
                 dropdown.style.display = 'block'
-                btnNuevo.style.display = 'inline-block'
                 botonLimpio.addEventListener('click', async (e) => {
                     e.preventDefault()
                     const id_empleado = dropdown.value
@@ -392,8 +389,24 @@ Fecha Asignacion: ${asignacion ? new Date(asignacion.fecha_asignacion).toLocaleD
             localStorage.setItem('historialReportes', JSON.stringify(historial.slice(0, 50)))
         })
     </script>
+<!--Script para actualizacion en tiempo real-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+        let timeout
 
-    
+        socket.on('equipos-actualizados', () => {
+            clearTimeout(timeout)
+            timeout = setTimeout(() => {
+                cargarEquipo() // solo recarga los datos del equipo
+            }, 300)
+        })
+
+        // Solo actualiza asignacion cuando cambia una asignacion
+        socket.on('asignacion-actualizada', () => {
+            verificarAsignacion()
+        })
+    </script>
     
 
 </body>

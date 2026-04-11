@@ -84,18 +84,16 @@
 
     <!--Script principal, Muestra los equipos guardados en la base de datos-->
     <script>
-        fetch('/PaginaAdmin/TablaEquipos')
-        .then(res => res.json())
-        .then(data => {
+       async function cargarEquipos() {
+            const res = await fetch('/PaginaAdmin/TablaEquipos')
+            const data = await res.json()
             const grid = document.getElementById("gridEquipos")
             grid.innerHTML = ""
 
             data.forEach(equipo => {
                 const card = `
                 <a href="/PagComputadora?id=${equipo.id_equipos}" class="equipo-card">
-                    <div class="equipo-img">
-                        <!-- aquí tu SVG -->
-                    </div>
+                    <div class="equipo-img"></div>
                     <div class="equipo-info">
                         <h3>${equipo.nombre_equipo}</h3>
                         <p>${equipo.marca}</p>
@@ -107,7 +105,9 @@
                 `
                 grid.innerHTML += card
             })
-        })
+        }
+
+    cargarEquipos()
     </script>
 
     <!--Script historial de reportes-->
@@ -149,6 +149,19 @@
         }
 
         document.querySelector('a[href="#popup-historial"]').addEventListener('click', cargarHistorial)
+    </script>
+    <!--Script para actualizacion en tiempo real-->>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+        let timeout
+
+        socket.on('equipos-actualizados', () => {
+            clearTimeout(timeout)
+            timeout = setTimeout(() => {
+                cargarEquipos()
+            }, 300)
+        })
     </script>
 
 </body>
