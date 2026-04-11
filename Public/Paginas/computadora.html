@@ -55,40 +55,7 @@
         </div>
     </div>
 
-    <!--popup nuevo empleado-->
-    <div class="popup-overlay" id="popup-nuevo-empleado">
-        <a href="#" class="popup-fondo"></a>
-        <div class="popup-caja">
-            <a href="#" class="popup-cerrar">✕</a>
-            <h3 style="margin-bottom:16px;margin-top:8px;font-size:16px;color:#1e293b;">Nuevo Empleado</h3>
-            <div style="display:flex;flex-direction:column;gap:12px;min-width:260px;">
-                <div>
-                    <label style="font-size:13px;font-weight:600;color:#2563eb;">Nombre</label>
-                    <input id="nuevo-nombre" type="text" placeholder="Nombre del empleado"
-                        style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;">
-                </div>
-                <div>
-                    <label style="font-size:13px;font-weight:600;color:#2563eb;">Puesto</label>
-                    <input id="nuevo-puesto" type="text" placeholder="Puesto"
-                        style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;">
-                </div>
-                <div>
-                    <label style="font-size:13px;font-weight:600;color:#2563eb;">Área</label>
-                    <select id="nuevo-area"
-                        style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;">
-                        <option value="">Selecciona un área</option>
-                    </select>
-                </div>
-                <button id="btn-guardar-empleado"
-                    style="margin-top:4px;padding:10px;background:#2563eb;color:white;border:none;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;">
-                    Guardar
-                </button>
-                <p id="msg-nuevo-empleado" style="font-size:12px;text-align:center;color:#22c55e;display:none;">
-                    Empleado creado correctamente
-                </p>
-            </div>
-        </div>
-    </div>
+    
 
     <div class="pagina-titulo">
         <h1 id="NumeroEquipo"></h1>
@@ -198,7 +165,7 @@
                 <select id="lista-empleados" style="display:none">
                     <option value="">Selecciona un empleado</option>
                 </select>
-                <a href="#popup-nuevo-empleado" class="btn-mantenimiento" id="btn-nuevo-empleado" style="display:none;">+ Nuevo</a>
+
                 <a href="#popup-mantenimiento" class="btn-mantenimiento">Historial de Mantenimiento</a>
             </div>
         </div>
@@ -426,43 +393,8 @@ Fecha Asignacion: ${asignacion ? new Date(asignacion.fecha_asignacion).toLocaleD
         })
     </script>
 
-    <!--Script nuevo empleado-->
-    <script>
-        async function cargarAreas() {
-            const select = document.getElementById('nuevo-area')
-            select.innerHTML = '<option value="">Selecciona un área</option>'
-            const respuesta = await fetch('/Empleados/Areas')
-            const areas = await respuesta.json()
-            areas.forEach(area => {
-                select.innerHTML += `<option value="${area.id_area}">${area.nombre_area}</option>`
-            })
-        }
-        document.querySelector('a[href="#popup-nuevo-empleado"]').addEventListener('click', cargarAreas)
-
-        document.getElementById('btn-guardar-empleado').addEventListener('click', async () => {
-            const nombre = document.getElementById('nuevo-nombre').value.trim()
-            const puesto = document.getElementById('nuevo-puesto').value.trim()
-            const area_id = document.getElementById('nuevo-area').value
-            if (!nombre || !puesto || !area_id) {
-                alert('Completa todos los campos')
-                return
-            }
-            await fetch('/Empleados/Nuevo', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre_empleado: nombre, puesto, area_id })
-            })
-            document.getElementById('msg-nuevo-empleado').style.display = 'block'
-            document.getElementById('nuevo-nombre').value = ''
-            document.getElementById('nuevo-puesto').value = ''
-            document.getElementById('nuevo-area').value = ''
-            setTimeout(() => {
-                document.getElementById('msg-nuevo-empleado').style.display = 'none'
-                window.location.href = '#'
-            }, 1500)
-            await cargarEmpleados()
-        })
-    </script>
+    
+    
 
 </body>
 </html>
